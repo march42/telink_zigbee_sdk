@@ -5,6 +5,10 @@
  *
  * @author  Zigbee Group
  * @date    2021
+ * 
+ * @author	Marc Hefter
+ * @date	2024-2025
+ * @par     Copyright (C) 2025, Marc Hefter (https://github.com/march42)
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -62,6 +66,13 @@
 #define ZCL_ATTRID_BASIC_MODEL_ID                         0x0005
 #define ZCL_ATTRID_BASIC_DATE_CODE                        0x0006
 #define ZCL_ATTRID_BASIC_POWER_SOURCE                     0x0007
+#define ZCL_ATTRID_BASIC_GENERICDEVICE_CLASS				0x0008
+#define ZCL_ATTRID_BASIC_GENERICDEVICE_TYPE					0x0009
+#define ZCL_ATTRID_BASIC_PRODUCT_CODE						0x000A
+#define ZCL_ATTRID_BASIC_PRODUCT_URL						0x000B
+#define ZCL_ATTRID_BASIC_MANUFACTURER_VERSION_DETAILS		0x000C
+#define ZCL_ATTRID_BASIC_SERIAL_NUMBER						0x000D
+#define ZCL_ATTRID_BASIC_PRODUCT_LABEL						0x000D
 #define ZCL_ATTRID_BASIC_LOC_DESC                         0x0010
 #define ZCL_ATTRID_BASIC_PHY_ENV                          0x0011
 #define ZCL_ATTRID_BASIC_DEV_ENABLED                      0x0012
@@ -79,6 +90,7 @@
 #define POWER_SOURCE_DC                                   	0x04
 #define POWER_SOURCE_EMERG_MAINS_CONST_PWR                	0x05
 #define POWER_SOURCE_EMERG_MAINS_XFER_SW                  	0x06
+#define POWER_SOURCE_BATTERY_BACKUP_SOURCE					0x80	/* this bit indicates battery backup source */
 
 /**
  *  @brief Max length of char string
