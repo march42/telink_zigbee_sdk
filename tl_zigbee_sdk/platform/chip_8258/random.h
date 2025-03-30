@@ -38,7 +38,7 @@ void random_generator_init(void);
  * @param[in] none.
  * @return    the value of one random number.
  */
-unsigned int rand(void);
+unsigned int telink_rand(void);
 
 
 

@@ -366,7 +366,7 @@ void drv_wd_clear(void)
 u32 drv_u32Rand(void)
 {
 #if defined(MCU_CORE_826x) || defined(MCU_CORE_8258) || defined(MCU_CORE_8278)
-	return rand();
+	return telink_rand();
 #elif defined(MCU_CORE_B91) || defined(MCU_CORE_B92) || defined(MCU_CORE_TL721X) || defined(MCU_CORE_TL321X)
 	return trng_rand();
 #else
