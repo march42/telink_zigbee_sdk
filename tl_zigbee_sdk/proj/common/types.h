@@ -169,9 +169,12 @@ typedef struct {
 //typedef	u16	wchar_t;
 //#endif
 
+/*  size_t seems to be unused
+**  typedef will collide with Gnu headers, when linking against libc, libm, libg
 #ifndef WIN32
 typedef u32 size_t;
 #endif
+*/
 
 #define U32_MAX ((u32)0xffffffff)
 #define U16_MAX ((u16)0xffff)
