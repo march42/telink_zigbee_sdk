@@ -23,6 +23,15 @@
  *
  *******************************************************************************************************/
 
+#if (__PRINTF_FLOAT)
+	/* stdlib.h doesn't play well with the ZigBee SDK headers
+	**	conflicting types for 'size_t'		telink_zigbee_sdk/tl_zigbee_sdk/proj/common/../drivers/../common/types.h:173
+	**	conflicting types for 'rand'		telink_zigbee_sdk/tl_zigbee_sdk/platform/chip_8258/random.h:41
+#	include <stdlib.h>
+	**	without including stdlib.h the code won't use the library functions */
+#	include <math.h>
+#endif
+
 #include "../drivers/drv_putchar.h"
 #if defined(MCU_CORE_B91) || defined(MCU_CORE_B92) || defined(MCU_CORE_TL721X) || defined(MCU_CORE_TL321X)
 	#include <stdarg.h>
@@ -75,14 +84,66 @@ static void puti(unsigned int num, int base){
 	put_s(addr);
 }
 
+#if (__PRINTF_FLOAT)
+static void putf(double num)
+{
+#	ifdef _STDLIB_H_
+	int dec, sign;
+	s = fcvt (num, 5, &dec, &sign);
+	if (sign) {
+		drv_putchar('-');
+	}
+	while((*s != '\0')){
+		if (dec-- == 0) {
+			drv_putchar('.');
+		}
+		drv_putchar(*s++);
+	}
+#	else
+	double f_integ,f_fract;
+	// convert to split decimal
+	f_fract = modf (num, &f_integ);	// f_fract gets the fractional part, f_integ gets the integral part
+	m = (long)f_integ;				// cast to integer
+	if(m<0){
+		drv_putchar('-');
+		m = -m;
+	}
+	puti(m,DECIMAL_OUTPUT);
+	drv_putchar('.');
+	f_fract *= 100000.0;			// this should give 5 decimal digits
+	m = (long)f_fract;				// cast to integer
+	if (m < 10000) {
+		drv_putchar('0');			// output leading zeroes
+	}
+	if (m < 1000) {
+		drv_putchar('0');			// output leading zeroes
+	}
+	if (m < 100) {
+		drv_putchar('0');			// output leading zeroes
+	}
+	if (m < 10) {
+		drv_putchar('0');			// output leading zeroes
+	}
+	puti(m,DECIMAL_OUTPUT);
+#	endif
+}
+#endif
+
 int tl_printf(const char *format, ...){
 	char span;
 	unsigned long j;
 	char *s;
 	long m;
+#if (__PRINTF_FLOAT)
+	double f;
+#endif
 
 	va_list arg_ptr;
 	va_start(arg_ptr, format);
+
+#if (UART_PRINTF_DISABLE_IRQ)
+	u32 r = drv_disable_irq();// enable this may disturb time sequence, but if disable unrecognizable code will show
+#endif
 
 	while((span = *(format++))){
 		if(span != '%'){
@@ -108,6 +169,11 @@ int tl_printf(const char *format, ...){
 			}else if(span == 'x'){
 					j = va_arg(arg_ptr,unsigned int);//get hex value
 					puti(j,HEX_OUTPUT);
+#if (__PRINTF_FLOAT)
+			}else if(span == 'f'){
+				f = va_arg(arg_ptr,double);//get floating point value
+				putf(f);
+#endif
 			}else if(span == 0){
 				break;
 			}else{
@@ -116,6 +182,10 @@ int tl_printf(const char *format, ...){
 		}
 	}
 	va_end(arg_ptr);
+
+#if (UART_PRINTF_DISABLE_IRQ)
+	drv_restore_irq(r);
+#endif
 
 	return 0;
 }
