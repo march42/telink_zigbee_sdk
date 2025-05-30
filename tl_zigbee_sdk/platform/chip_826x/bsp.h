@@ -95,7 +95,7 @@ static inline void mcu_reset(void){
 
 int LoadTblCmdSet(const TBLCMDSET *pt, int size);
 
-unsigned int rand(void);
+unsigned int telink_rand(void);
 
 unsigned char analog_read(unsigned char addr);
 void analog_write(unsigned char addr, unsigned char v);
